@@ -20,6 +20,9 @@ jobs:
       - run: |
           git fetch --prune
           git branch -r --merged origin/dev | \
-            grep -v '\->|origin/dev$|origin/master$|origin/staging$' | \
+            grep -v '\->' | \
+            grep -v 'origin/dev$' | \
+            grep -v 'origin/master$' | \
+            grep -v 'origin/staging$' | \
             sed 's|origin/||' | \
             xargs -r git push origin --delete
