@@ -1,0 +1,25 @@
+name: Auto Delete Merged Branches
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [dev]
+
+jobs:
+  delete_merged_branches:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - run: |
+          git fetch --prune
+          git branch -r --merged origin/dev | \
+            grep -v '\->|origin/dev$|origin/master$|origin/staging$' | \
+            sed 's|origin/||' | \
+            xargs -r git push origin --delete
